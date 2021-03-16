@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Адель Ягафарова</title>
+</head>
+
+<body>
+  <script language="JavaScript" type="text/JavaScript">
+    function getName() { 
+    let name = prompt('Введите сюда свое имя:','Введите имя')
+    if(name !== null){
+      alert("Ваше имя? "+name)
+    let startAgain = confirm("Начать заново?")
+    if (startAgain){
+      let startAgain2 = confirm("Не надоело?")
+      if(startAgain2)
+        getName()
+    }
+      
+    else
+      alert("Ну и правильно!")
+    }
+   }
+
+   getName();
+    
+      
+  </script>
+</body>
+
+</html>

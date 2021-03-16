@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	    <meta charset="utf-8">
+		<script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
+		<title>Ягафарова</title>
+<style>
+.newsImg {
+	width: 150px;
+    height: 130px;
+	float: right;
+}
+.news {
+    padding: 30px;
+    margin-bottom: 1%;
+    background: #9eccb3;
+}
+div {
+    display: block;
+	width: 80%;
+    height: 120%;
+}
+body {
+    background: #83b5dd;
+}
+</style>
+</head>
+	<body>
+		<a href="index.html" style="margin-left: 85%; position: fixed;">Назад</a>
+		<button style="height: 50px; width:200px; 
+		margin-left: 85%; margin-top: 2%; position: fixed; background:#aab1b0">
+		    Загрузить еще
+		 </button>
+		<fieldset>
+			<div class="news">
+				<img class="newsImg" src="imgN/1.jpg" />
+				<h1>Радий Хабиров назвал условия, при которых школьников переведут на дистанционное обучение</h1>
+				<p>Радий Хабиров заявил, что школьников снова могут перевести на удаленное обучение. 
+				Речь идет об учащихся 6–11-х классов. Эти ученики могут не вернуться в классы после осенних каникул.</p>
+			</div>
+			<div class="news"> 
+				<img class="newsImg" src="imgN/2.jpg" />
+				<h1 >Власти Уфы назвали сроки окончания ремонта дорог</h1>
+				<p>В мэрии Уфы планируется завершить ремонт дорог и
+				открыть все участки для проезда транспорта до конца октября 2020 года.</p>
+			</div>
+			<div class="news">
+				<img class="newsImg" src="imgN/3.jpg" />
+				<h1>Начало ноября в Уфе будет холодным</h1>
+				<p>В Уфе прогнозируется холодное начало ноября – по прогнозам синоптиков,
+				уже 1 числа дневная температура упадёт до 0 градусов.</p>
+			</div>
+			<div class="news">
+				<img class="newsImg" src="imgN/4.jpg" />
+				<h1>Глава Башкирии ужесточит масочный режим </h1>
+			    <p>Глава Башкирии Радий Хабиров на оперативке в правительстве республики сообщил об ужесточении
+			    масочного режима.</p>
+			</div>
+			<div class="news">
+				<img class="newsImg" src="imgN/5.jpg" />
+				<h1>МЧС Башкирии предупреждает об опасном ухудшении погоды</h1>
+				<p>С 20 часов 3 ноября до 20 часов 4 ноября ожидается переменная облачность, 
+				без существенных осадков, ночью и утром местами туман, гололед, ветер южный 5—10 м/с, 
+				прогнозируют синоптики.</p>
+			</div>
+			</fieldset>
+			<script>
+			$('button').on('click', function(){
+				let kol = 5;
+				let tek = $('.news').length;
+				$.ajax({ 
+					url: "3.php", 
+					dataType: "json", 
+					method: "GET",   
+					data: {"kol": kol,"tek": tek},
+					success: function(msg) {
+					    var result = JSON.parse(msg);
+				         for (i=1;i<=5;i++){
+						$("fieldset").append('<div class="news"> <img class="newsImg" src="'+result[tek-i].IMG+'" /><h1>'+result[tek-i].TITLE+'</h1>'+result[tek-i].TEXT+'</div>');
+					}
+				   },
+				    error: function(msg){
+                        alert("Ошибка");
+                     }
+				});
+				
+			}); 
+			</script>
+	</body>
+</html>

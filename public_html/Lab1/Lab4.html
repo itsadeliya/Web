@@ -1,0 +1,41 @@
+<html>
+
+<head>
+  <title>Адель Ягафарова</title>
+</head>
+<meta charset="UTF-8">
+<body>
+  <input type="button" id="z1" value="Сравнение чисел">
+  <input type="button" id="z2" value="Пароль">
+
+  <script language="JavaScript" type="text/JavaScript">
+
+  document.getElementById("z1").onclick = function () {
+    var x, y;
+    x=parseInt(prompt("Введите значение х",'')); 
+    y=parseInt(prompt("Введите значение у",'')); 
+    if(x<y){
+      alert(" Максимальное число - y");
+    } else if (x == y){
+      alert("Введенные числа равны!")
+    } else if(x > y){
+      alert(" Максимальное число - x");
+    } else {
+      alert("Нужно ввести оба числа")
+    }
+  }
+  document.getElementById("z2").onclick = function () {
+    let correctPassword = "123456"
+    let password = prompt("Введите пароль")
+    if (password === correctPassword){
+      alert("Пароль верен")
+    } else {
+      alert("Пароль введен неправильно")
+    }
+  }
+
+  
+</script>
+</body>
+
+</html>
