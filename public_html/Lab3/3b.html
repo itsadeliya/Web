@@ -1,111 +1,274 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <html>
-    <script src = "https://code.jquery.com/jquery-3.4.1.js"></script>
-	<script src = "https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+	function loadDowBut(nameN, dateN, textN) {
+		$("#comments").append('<div class="comment"><img src="imgN/user.png"/><span>' + nameN + '</span><span class="date">' + dateN + '</span><p>' + textN + ' </p> </div>');
+	}
+</script>
+
+<head>
+	<title>Ягафарова</title>
+</head>
+<style type="text/css">
+	body {
+		background: rgba(200, 240, 255, 1);
+	}
+
+	img {
+		height: 20px;
+		width: 20px
+	}
+
+	.date {
+		margin-left: 50px;
+	}
+
+	fieldset {
+		background: pink;
+	}
+
+	.comment {
+		background-color: rgba(255, 220, 255, 1);
+	}
+
+
+	#drop-area {
+		border: 2px dashed black;
+		border-radius: 20px;
+		width: 480px;
+		font-family: sans-serif;
+		margin: 20px auto;
+		padding: 20px;
+		background-color: wheat;
+	}
+
+	#drop-area.highlight {
+		border-color: purple;
+	}
+
+	p {
+		margin-top: 0;
+	}
+
+	.my-form {
+		margin-bottom: 10px;
+	}
+
+	#gallery {
+		margin-top: 10px;
+	}
+
+	#gallery img {
+		width: 150px;
+		margin-bottom: 10px;
+		margin-right: 10px;
+		vertical-align: middle;
+	}
+
+	.button {
+		display: inline-block;
+		padding: 10px;
+		background: #ccc;
+		cursor: pointer;
+		border-radius: 5px;
+		border: 1px solid #ccc;
+	}
+
+	.button:hover {
+		background: #ddd;
+	}
+#fileElem{
+	display:none;
+}
+
+</style>
+
+<body>
+	<section>
+		<h1> Служба компьютерной помощи</h1>
+		<h2>Ваши проблемы - наши решения</h2>
+	</section>
+	<fieldset id="form">
+		<label for="name">Ваше имя:</label>
+		<input id="name"></input><br>
+		<label for="email">Ваш e-mail:</label>
+		<input id="email"></input><br>
+		<label for="sms">Описание проблемы:</label>
+		<input id="sms" size="100"></input><br>
+
+		<div id="drop-area">
+			<form class="my-form">
+				<p>Загрузите файлы</p>
+				<input type="file" id="fileElem"  onchange="handleFiles(this.files)">
+    			<label class="button" for="fileElem">Выбрать изображения</label>
+
+			</form>
+		</div>
+
+		<button>Отправить</button>
+		<a href=" index.html">Назад</a>
+	</fieldset>
+	<br>
+	<section id="comments">
+		<div class="comment">
+			<p>
+				<img src="imgN/user.png" />
+				Анатолий
+				<span class="date">30.09.2020</span>
+			</p>
+			<p>Перегорела материнская плата</p>
+
+		</div>
+	</section>
 	<script>
-            function loadDowBut(nameN,dateN,textN) {
-                    $("#comments").append('<div class="comment"><img src="imgN/user.png"/><span>'+nameN+'</span><span class="date">'+dateN+'</span><p>'+textN+' </p> </div>');
-            }
-	</script>
-    <head>
-        <title>Ягафарова</title>
-   	</head>
-   	<style type="text/css">
-   	body{
-   	    background:rgba(200, 240, 255, 1);
-   	}
-    img{
-      height:20px;
-      width: 20px  
-    }
-    .date{
-        margin-left:50px;
-    }
-    fieldset{
-        background:pink;
-    }
-    .comment{
-        background-color: rgba(255, 220, 255, 1);
-    }
-   	</style>
-	<body>
-	    <section>
-	    <h1> Служба компьютерной помощи</h1>
-	    <h2>Ваши проблемы - наши решения</h2>
-	    </section>
-	    <fieldset id="form">
-	        <label for="name">Ваше имя:</label>
-	        <input id="name"></input><br>
-	        <label for="email">Ваш e-mail:</label>
-	        <input id="email"></input><br>
-	        <label for="sms">Описание проблемы:</label>
-	        <input id="sms" size="100"></input><br>
-	        <button>Отправить</button>
-	        <a href="index.html">Назад</a>
-	    </fieldset>
-	    <br>
-	    <section id="comments">
-	        <div class="comment"><p>
-	            <img src="imgN/user.png"/>
-	            Анатолий
-	            <span class="date">30.09.2020</span></p>
-	            <p>Перегорела материнская плата</p>
-	            
-	        </div>
-	    </section>
-	    <script>
-	         $('button').on('click', function(){
-    			 var inputName = document.getElementById("name").value;
-    	         var inputDate = new Date();
-    	         var inputSms = document.getElementById("sms").value;
-    	         if (inputName&&inputSms){ 
+		
+		let dropArea = document.getElementById('drop-area')
+		let fileInput = document.getElementById('fileElem')
+		let fileFP;
+
+		$(document).on('change', '#fileElem', function() {
+    var file = $(this)[0];
+ 
+
+    fileFP = file.files[0]
+
+});
+		;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+			dropArea.addEventListener(eventName, preventDefaults, false)
+		})
+
+		function preventDefaults(e) {
+			e.preventDefault()
+			e.stopPropagation()
+		}
+		;['dragenter', 'dragover'].forEach(eventName => {
+			dropArea.addEventListener(eventName, highlight, false)
+		})
+
+			;['dragleave', 'drop'].forEach(eventName => {
+				dropArea.addEventListener(eventName, unhighlight, false)
+			})
+
+		function highlight(e) {
+			dropArea.classList.add('highlight')
+		}
+
+		function unhighlight(e) {
+			dropArea.classList.remove('highlight')
+		}
+		dropArea.addEventListener('drop', handleDrop, false)
+
+		function handleDrop(e) {
+			let dt = e.dataTransfer
+			let files = dt.files
+			 handleFiles(files)
+
+		}
+	
+		function handleFiles(files) {
+			fileFP = files
+		}
+
+		function uploadFile(file) {
+			var xhr = new XMLHttpRequest()
+			var formData = new FormData()
+			xhr.open('POST', '/upload.php');
+			xhr.addEventListener('readystatechange', function (e) {
+				if (xhr.readyState == 4 && xhr.status == 200) {
+				}
+				else if (xhr.readyState == 4 && xhr.status != 200) {
+				}
+			})
+
+			formData.append('file', file)
+			xhr.send(formData)
+
+
+		}
+
+		function highlight(e) {
+			dropArea.classList.add('highlight')
+		}
+		function unhighlight(e) {
+			dropArea.classList.remove('highlight')
+		}
+		$('button').on('click', function () {
+			uploadFile(fileFP);
+			var inputName = document.getElementById("name").value;
+			var inputEmail = document.getElementById("email").value;
+			var inputDate = new Date();
+			var inputSms = document.getElementById("sms").value;
+
+
+
+			if (inputName && inputSms){
 				$.ajax({
-					url: "setdata_3b.php", 
-					dataType: "json", 
-					method: "GET",   
-					data: {"NAME": inputName, "SMS":inputSms,"DATE": inputDate.toLocaleDateString()},
-					success: function(data) {
-					    document.getElementById("email").value="";
-					    document.getElementById("name").value="";
-    	                document.getElementById("sms").value="";
-				   },
-				    error: function(data) {
-                        alert("Ошибка");
-                     }
-				});
-				loadDowBut(inputName,inputDate.toLocaleDateString(),inputSms);
-	         }
-			else{
-	             alert("Заполните поля!");
-	         }
-	         }); 
-	    $(document).ready(function() {
-	        $.ajax({
-					url: "getdata_3b.php", 
-					dataType: "json", 
-					method: "GET",    
-					data: {},
-					success: function(msg) {
-					    var result = JSON.parse(msg);
-					    if ((Object.entries(result).length > 0)&&(Number.isInteger(result.length))){
-					        for(i=0;i<result.length;i++){
-					            $("#comments").append('<div class="comment"><img src="imgN/user.png"/><span>'+result[i].NAME+'</span><span class="date">'+result[i].DATE+'</span><p>'+result[i].TEXT+' </p> </div>');
-					        }
-					    }
-					    else if(Object.entries(result).length==0){
-					    }
-                        else{
-                            $("#comments").append('<div class="comment"><img src="imgN/user.png"/><span>'+result.NAME+'</span><span class="date">'+result.DATE+'</span><p>'+result.TEXT+' </p> </div>');
-                        }
+					url: "./setdata_3b.php",
+					dataType: "json",
+					method: "GET",
+					data: { "NAME": inputName, "SMS": inputSms, "DATE": inputDate.toLocaleDateString() },
+					success: function (data) {
+						
 					},
-				    error: function(msg) {
-                        alert("Ошибка");
-                     }
+					error: function (exception ) {
+						alert("Ошибка");
+					}
 				});
-            });
-	    </script>
-	    <script>
-	    </script>
-	</body>
+
+
+				loadDowBut(inputName, inputDate.toLocaleDateString(), inputSms);
+
+				
+				$.ajax({
+					url: "./upload.php",
+					dataType: "json",
+					method: "POST",
+					data: { "name": inputName, "comment": inputSms, "email": inputEmail},
+					success: function (data) {
+						document.getElementById("email").value = "";
+						document.getElementById("name").value = "";
+						document.getElementById("sms").value = "";
+					},
+					error: function (data ) {
+						console.log('Error', data);
+
+					}
+				});
+			}
+			else {
+				alert("Заполните поля!");
+			}
+		});
+		$(document).ready(function () {
+			$.ajax({
+				url: "getdata_3b.php",
+				dataType: "json",
+				method: "GET",
+				data: {},
+				success: function (msg) {
+					var result = JSON.parse(msg);
+					if ((Object.entries(result).length > 0) && (Number.isInteger(result.length))) {
+						for (i = 0; i < result.length; i++) {
+							$("#comments").append('<div class="comment"><img src="imgN/user.png"/><span>' + result[i].NAME + '</span><span class="date">' + result[i].DATE + '</span><p>' + result[i].TEXT + ' </p> </div>');
+						}
+					}
+					else if (Object.entries(result).length == 0) {
+					}
+					else {
+						$("#comments").append('<div class="comment"><img src="imgN/user.png"/><span>' + result.NAME + '</span><span class="date">' + result.DATE + '</span><p>' + result.TEXT + ' </p> </div>');
+					}
+				},
+				error: function (msg) {
+					alert("Ошибка");
+				}
+			});
+		});
+	</script>
+	<script>
+	</script>
+</body>
+
 </html>
