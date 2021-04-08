@@ -52,13 +52,26 @@ input{
   let theme = $("#theme")
   let message = $("#message")
   
-$("#send").click(function(){
-  isEmpty(name);
-  checkPassword(password);
-  checkPasswordTest(passwordTest);
-  checkEmail(email);
-  checkMessage(message);
+  $("#send").click(function(){
+  if(
+  isEmpty(name) &&
+  checkPassword(password)&&
+  checkPasswordTest(passwordTest)&&
+  checkEmail(email)&&
+  checkMessage(message)
+  ){
+    $.ajax({
+            url: "./main.php",
+            type: "post",
+            data: { name: name.val(), email: email.val(), password: password.val(), message_theme: theme.val(), message_text: message.val()},
+            success: function (data) {
+              console.log("success" + data);
+            }
+          });
+  }
+  
 })
+
 
 $("#clear").click(function(){
   name.val('')
