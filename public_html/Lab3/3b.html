@@ -80,10 +80,14 @@
 	.button:hover {
 		background: #ddd;
 	}
-#fileElem{
-	display:none;
-}
 
+	#fileElem {
+		display: none;
+	}
+
+	.fileName {
+		margin-top: 10px;
+	}
 </style>
 
 <body>
@@ -102,9 +106,10 @@
 		<div id="drop-area">
 			<form class="my-form">
 				<p>Загрузите файлы</p>
-				<input type="file" id="fileElem"  onchange="handleFiles(this.files)">
-    			<label class="button" for="fileElem">Выбрать изображения</label>
+				<input type="file" id="fileElem" onchange="handleFiles(this.files)">
+				<label class="button" for="fileElem">Выбрать изображения</label>
 
+				<p class="fileName" id="dropFileName"></p>
 			</form>
 		</div>
 
@@ -120,22 +125,25 @@
 				<span class="date">30.09.2020</span>
 			</p>
 			<p>Перегорела материнская плата</p>
+			<p>Файл: <a href="" download></a></p>
 
 		</div>
 	</section>
+	<input id="loadMoreButton" type="button" value="Загрузить еще">
+
 	<script>
-		
+
 		let dropArea = document.getElementById('drop-area')
 		let fileInput = document.getElementById('fileElem')
+		let fileName = document.getElementById('dropFileName')
+		let comments = document.getElementById('comments');
 		let fileFP;
+		$(document).on('change', '#fileElem', function () {
+			var file = $(this)[0];
+			fileFP = file.files[0]
+			fileName.textContent = fileFP.name
 
-		$(document).on('change', '#fileElem', function() {
-    var file = $(this)[0];
- 
-
-    fileFP = file.files[0]
-
-});
+		});
 		;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
 			dropArea.addEventListener(eventName, preventDefaults, false)
 		})
@@ -164,10 +172,12 @@
 		function handleDrop(e) {
 			let dt = e.dataTransfer
 			let files = dt.files
-			 handleFiles(files)
+			console.log(files[0].name);
+			fileName.textContent = files[0].name
 
+			handleFiles(files)
 		}
-	
+
 		function handleFiles(files) {
 			fileFP = files
 		}
@@ -185,8 +195,8 @@
 
 			formData.append('file', file)
 			xhr.send(formData)
-
-
+			var resp = xhr.response;
+			console.log(resp);
 		}
 
 		function highlight(e) {
@@ -195,6 +205,46 @@
 		function unhighlight(e) {
 			dropArea.classList.remove('highlight')
 		}
+
+		$("#loadMoreButton").on("click", function () {
+			let kol = 5;
+			let tek = comments.getElementsByClassName('comment').length + 4;
+
+			$.ajax({
+				url: "moreComments.php",
+				dataType: "json",
+				method: "GET",
+				data: { "kol": kol, "tek": tek },
+				success: function (msg) {
+					var result = JSON.parse(msg);
+					console.log( result.length % 5);
+					
+						for (i = 1; i <= kol; i++) {
+
+							typeof (result[tek - i].FILENAME) != "string" ?
+								$("#comments").append(
+									'<div class="comment"><img src="imgN/user.png"/><span>'
+									+ result[tek - i].NAME + '</span><span class="date">'
+									+ result[tek - i].DATE + '</span><p>' + result[tek - i].TEXT +
+									' </p></div>')
+								: $("#comments").append(
+									'<div class="comment"><img src="imgN/user.png"/><span>'
+									+ result[tek - i].NAME + '</span><span class="date">'
+									+ result[tek - i].DATE + '</span><p>' + result[tek - i].TEXT +
+									' </p> <p>Файл: <a class = "fileName" href="./files/'
+									+ result[tek - i].FILENAME + '" download>'
+									+ result[tek - i].FILENAME + '</a></p> </div>');
+						}
+					
+					
+				},
+				error: function (msg) {
+					alert("Ошибка");
+				}
+
+			});
+
+		});
 		$('button').on('click', function () {
 			uploadFile(fileFP);
 			var inputName = document.getElementById("name").value;
@@ -204,16 +254,16 @@
 
 
 
-			if (inputName && inputSms){
+			if (inputName && inputSms) {
 				$.ajax({
 					url: "./setdata_3b.php",
 					dataType: "json",
 					method: "GET",
-					data: { "NAME": inputName, "SMS": inputSms, "DATE": inputDate.toLocaleDateString() },
+					data: { "NAME": inputName, "SMS": inputSms, "FILENAME": fileName.textContent, "DATE": inputDate.toLocaleDateString() },
 					success: function (data) {
-						
+
 					},
-					error: function (exception ) {
+					error: function (exception) {
 						alert("Ошибка");
 					}
 				});
@@ -221,18 +271,20 @@
 
 				loadDowBut(inputName, inputDate.toLocaleDateString(), inputSms);
 
-				
+
 				$.ajax({
 					url: "./upload.php",
 					dataType: "json",
 					method: "POST",
-					data: { "name": inputName, "comment": inputSms, "email": inputEmail},
+					data: { "name": inputName, "comment": inputSms, "email": inputEmail },
 					success: function (data) {
 						document.getElementById("email").value = "";
 						document.getElementById("name").value = "";
 						document.getElementById("sms").value = "";
+						fileName.textContent = "";
+						console.log(data)
 					},
-					error: function (data ) {
+					error: function (data) {
 						console.log('Error', data);
 
 					}
@@ -251,20 +303,54 @@
 				success: function (msg) {
 					var result = JSON.parse(msg);
 					if ((Object.entries(result).length > 0) && (Number.isInteger(result.length))) {
-						for (i = 0; i < result.length; i++) {
-							$("#comments").append('<div class="comment"><img src="imgN/user.png"/><span>' + result[i].NAME + '</span><span class="date">' + result[i].DATE + '</span><p>' + result[i].TEXT + ' </p> </div>');
+						for (i = 0; i < 5; i++) {
+							console.log(typeof (result[i].FILENAME));
+
+							typeof (result[i].FILENAME) != "string" ?
+								$("#comments").append(
+									'<div class="comment"><img src="imgN/user.png"/><span>'
+									+ result[i].NAME + '</span><span class="date">'
+									+ result[i].DATE + '</span><p>' + result[i].TEXT +
+									' </p></div>')
+								: $("#comments").append(
+									'<div class="comment"><img src="imgN/user.png"/><span>'
+									+ result[i].NAME + '</span><span class="date">'
+									+ result[i].DATE + '</span><p>' + result[i].TEXT +
+									' </p> <p>Файл: <a class = "fileName" href="./files/'
+									+ result[i].FILENAME + '" download>'
+									+ result[i].FILENAME + '</a></p> </div>');
+
 						}
 					}
 					else if (Object.entries(result).length == 0) {
 					}
 					else {
-						$("#comments").append('<div class="comment"><img src="imgN/user.png"/><span>' + result.NAME + '</span><span class="date">' + result.DATE + '</span><p>' + result.TEXT + ' </p> </div>');
+						console.log(result.FILENAME);
+
+						typeof (result.FILENAME) != "string" ?
+							$("#comments").append(
+								'<div class="comment"><img src="imgN/user.png"/><span>'
+								+ result.NAME + '</span><span class="date">'
+								+ result.DATE + '</span><p>' + result.TEXT +
+								' </p></div>')
+							: $("#comments").append(
+								'<div class="comment"><img src="imgN/user.png"/><span>'
+								+ result.NAME + '</span><span class="date">'
+								+ result.DATE + '</span><p>'
+								+ result.TEXT +
+								'</p>' +
+								'<p>Файл: <a class = "fileName" href="./files/'
+								+ result.FILENAME + '" download>'
+								+ result.FILENAME + '</a></p> </div>');
+
+
 					}
 				},
 				error: function (msg) {
 					alert("Ошибка");
 				}
 			});
+
 		});
 	</script>
 	<script>

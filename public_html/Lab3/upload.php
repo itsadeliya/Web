@@ -33,10 +33,10 @@ $sql="INSERT INTO user_comments(user_name,user_email, comment, file_path) VALUES
 $query = mysqli_query($con, $sql);
 
 if($query){
-  print json_encode("Data Inserted Successfully");
+    echo json_encode($uploadfile);
     }
 else {
-    print json_encode('problem');
+  echo json_encode('problem');
     }
 mysqli_close($con);
 
